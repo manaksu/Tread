@@ -9,6 +9,7 @@
     "displayName": "Tread Watch",
     "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
     "sdkVersion": "3",
+    "enableMultiJS": true,
     "targetPlatforms": ["basalt"],
     "watchapp": {
       "watchface": true

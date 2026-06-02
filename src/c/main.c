@@ -196,19 +196,12 @@ static void window_load(Window *window) {
   text_layer_set_text(s_nl_layer, "NL");
   layer_add_child(s_canvas_layer, text_layer_get_layer(s_nl_layer));
 
-  // Restore setting
-  s_clock_style = persist_read_int(KEY_CLOCK_STYLE);
-  update_layers();
-
-  // Init time
-  time_t now = time(NULL);
-  struct tm *t = localtime(&now);
-  handle_tick(t, MINUTE_UNIT);
-  tick_timer_service_subscribe(MINUTE_UNIT, handle_tick);
-
-  // AppMessage
+  // AppMessage — open first, then register
   app_message_open(128, 64);
   app_message_register_inbox_received(inbox_received);
+
+  // Restore setting
+  s_clock_style = persist_read_int(KEY_CLOCK_STYLE);
 }
 
 static void window_unload(Window *window) {
