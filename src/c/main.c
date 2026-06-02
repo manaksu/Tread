@@ -22,6 +22,7 @@ static TextLayer *s_min_layer;
 static TextLayer *s_ampm_layer;
 static TextLayer *s_nl_layer;
 static GFont      s_font_28;
+static GFont      s_font_20;
 static int        s_clock_style = 0;  // 0=digital 1=plate
 
 // --- Drawing helpers ---
@@ -152,7 +153,8 @@ static void window_load(Window *window) {
   layer_add_child(root, s_canvas_layer);
 
   s_tread_bmp = gbitmap_create_with_resource(RESOURCE_ID_TREAD);
-  s_font_28   = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_SPACE_GROTESK_MEDIUM_28));
+  s_font_28 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_SPACE_GROTESK_MEDIUM_28));
+  s_font_20 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_SPACE_GROTESK_MEDIUM_20));
 
   // --- Digital layers: HH / MM stacked top-left ---
   s_hour_layer = text_layer_create(GRect(6, 2, 90, 38));
@@ -171,19 +173,19 @@ static void window_load(Window *window) {
 
   // --- Plate layers ---
 
-  // AM/PM inside plate top row (x=24 after blue strip)
-  s_ampm_layer = text_layer_create(GRect(26, 6, 66, 30));
+  // AM/PM inside plate top row
+  s_ampm_layer = text_layer_create(GRect(26, 6, 66, 24));
   text_layer_set_background_color(s_ampm_layer, GColorClear);
   text_layer_set_text_color(s_ampm_layer, GColorBlack);
-  text_layer_set_font(s_ampm_layer, s_font_28);
+  text_layer_set_font(s_ampm_layer, s_font_20);
   text_layer_set_text_alignment(s_ampm_layer, GTextAlignmentCenter);
   layer_add_child(s_canvas_layer, text_layer_get_layer(s_ampm_layer));
 
   // HH:MM inside plate bottom row
-  s_time_layer = text_layer_create(GRect(26, 33, 66, 34));
+  s_time_layer = text_layer_create(GRect(26, 33, 66, 28));
   text_layer_set_background_color(s_time_layer, GColorClear);
   text_layer_set_text_color(s_time_layer, GColorBlack);
-  text_layer_set_font(s_time_layer, s_font_28);
+  text_layer_set_font(s_time_layer, s_font_20);
   text_layer_set_text_alignment(s_time_layer, GTextAlignmentCenter);
   layer_add_child(s_canvas_layer, text_layer_get_layer(s_time_layer));
 
@@ -202,11 +204,19 @@ static void window_load(Window *window) {
 
   // Restore setting
   s_clock_style = persist_read_int(KEY_CLOCK_STYLE);
+  update_layers();
+
+  // Subscribe tick and trigger first draw
+  tick_timer_service_subscribe(MINUTE_UNIT, handle_tick);
+  time_t now = time(NULL);
+  struct tm *t = localtime(&now);
+  handle_tick(t, MINUTE_UNIT);
 }
 
 static void window_unload(Window *window) {
   tick_timer_service_unsubscribe();
   fonts_unload_custom_font(s_font_28);
+  fonts_unload_custom_font(s_font_20);
   gbitmap_destroy(s_tread_bmp);
   text_layer_destroy(s_hour_layer);
   text_layer_destroy(s_min_layer);
