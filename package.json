@@ -19,6 +19,12 @@
           "type": "bitmap",
           "name": "TREAD",
           "file": "images/tread.png"
+        },
+        {
+          "type": "font",
+          "name": "SPACE_GROTESK_BOLD_60",
+          "file": "fonts/SpaceGrotesk-Bold.ttf",
+          "characterRegex": "[0-9]"
         }
       ]
     },
