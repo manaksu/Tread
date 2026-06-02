@@ -174,7 +174,7 @@ static void update_layers(void) {
 
 static void canvas_update_proc(Layer *layer, GContext *ctx) {
   // Map background — drawn first, everything on top
-  graphics_context_set_compositing_mode(ctx, GCompOpNormal);
+  graphics_context_set_compositing_mode(ctx, GCompOpSet);
   graphics_draw_bitmap_in_rect(ctx, s_map_bmp, GRect(0, 0, 144, 168));
 
   if (s_clock_style == 1) {
