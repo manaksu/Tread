@@ -1,13 +1,13 @@
 {
   "name": "treadwatch",
   "author": "Manaksu",
-  "version": "1.0.1",
+  "version": "1.0.0",
   "keywords": ["pebble-app"],
   "private": true,
   "dependencies": {},
   "pebble": {
     "displayName": "Tread Watch",
-    "uuid": "6e1c9e6a-6768-411b-bb7f-bbc7c7e503a2",
+    "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
     "sdkVersion": "3",
     "enableMultiJS": true,
     "targetPlatforms": ["basalt"],
@@ -25,7 +25,7 @@
           "type": "font",
           "name": "SPACE_GROTESK_MEDIUM_28",
           "file": "fonts/SpaceGrotesk-Medium.ttf",
-          "characterRegex": "[0-9:AMP]"
+          "characterRegex": "[0-9:AMPamp]"
         }
       ]
     },

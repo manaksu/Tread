@@ -120,7 +120,7 @@ static void handle_tick(struct tm *tick_time, TimeUnits units_changed) {
   static char min_buf[3];
 
   strftime(time_buf, sizeof(time_buf), "%H:%M", tick_time);
-  strftime(ampm_buf, sizeof(ampm_buf), "%p",    tick_time);
+  snprintf(ampm_buf, sizeof(ampm_buf), "%s", tick_time->tm_hour < 12 ? "AM" : "PM");
   strftime(hour_buf, sizeof(hour_buf), "%H",    tick_time);
   strftime(min_buf,  sizeof(min_buf),  "%M",    tick_time);
 
@@ -155,14 +155,14 @@ static void window_load(Window *window) {
   s_font_28   = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_SPACE_GROTESK_MEDIUM_28));
 
   // --- Digital layers: HH / MM stacked top-left ---
-  s_hour_layer = text_layer_create(GRect(6, 4, 80, 34));
+  s_hour_layer = text_layer_create(GRect(6, 2, 90, 38));
   text_layer_set_background_color(s_hour_layer, GColorClear);
   text_layer_set_text_color(s_hour_layer, GColorBlack);
   text_layer_set_font(s_hour_layer, s_font_28);
   text_layer_set_text_alignment(s_hour_layer, GTextAlignmentLeft);
   layer_add_child(s_canvas_layer, text_layer_get_layer(s_hour_layer));
 
-  s_min_layer = text_layer_create(GRect(6, 36, 80, 34));
+  s_min_layer = text_layer_create(GRect(6, 38, 90, 38));
   text_layer_set_background_color(s_min_layer, GColorClear);
   text_layer_set_text_color(s_min_layer, GColorBlack);
   text_layer_set_font(s_min_layer, s_font_28);
@@ -172,7 +172,7 @@ static void window_load(Window *window) {
   // --- Plate layers ---
 
   // AM/PM inside plate top row (x=24 after blue strip)
-  s_ampm_layer = text_layer_create(GRect(26, 7, 66, 28));
+  s_ampm_layer = text_layer_create(GRect(26, 6, 66, 30));
   text_layer_set_background_color(s_ampm_layer, GColorClear);
   text_layer_set_text_color(s_ampm_layer, GColorBlack);
   text_layer_set_font(s_ampm_layer, s_font_28);
@@ -180,7 +180,7 @@ static void window_load(Window *window) {
   layer_add_child(s_canvas_layer, text_layer_get_layer(s_ampm_layer));
 
   // HH:MM inside plate bottom row
-  s_time_layer = text_layer_create(GRect(26, 34, 66, 30));
+  s_time_layer = text_layer_create(GRect(26, 33, 66, 34));
   text_layer_set_background_color(s_time_layer, GColorClear);
   text_layer_set_text_color(s_time_layer, GColorBlack);
   text_layer_set_font(s_time_layer, s_font_28);
