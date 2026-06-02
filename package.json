@@ -1,0 +1,23 @@
+{
+  "name": "treadwatch",
+  "author": "Manaksu",
+  "version": "1.0.0",
+  "keywords": ["pebble-app"],
+  "projectType": "watchface",
+  "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+  "sdkVersion": "3",
+  "targetPlatforms": ["basalt"],
+  "watchapp": {
+    "watchface": true
+  },
+  "resources": {
+    "media": [
+      {
+        "type": "bitmap",
+        "name": "TREAD",
+        "file": "images/tread.png"
+      }
+    ]
+  },
+  "appKeys": {}
+}
