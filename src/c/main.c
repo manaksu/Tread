@@ -1,7 +1,7 @@
 #include <pebble.h>
 
-static Window *s_window;
-static Layer  *s_canvas_layer;
+static Window  *s_window;
+static Layer   *s_canvas_layer;
 static GBitmap *s_tread_bmp;
 
 static void canvas_update_proc(Layer *layer, GContext *ctx) {
@@ -9,23 +9,21 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
   graphics_context_set_fill_color(ctx, GColorWhite);
   graphics_fill_rect(ctx, GRect(0, 0, 144, 168), 0, GCornerNone);
 
-  // Draw tread exactly at 144x168
-  graphics_context_set_compositing_mode(ctx, GCompOpAnd);
-  graphics_draw_bitmap_in_rect(ctx, s_tread_bmp, GRect(0, 0, 144, 168));
+  // Tread: 96x56 at bottom-left corner, y=112
+  graphics_context_set_compositing_mode(ctx, GCompOpSet);
+  graphics_draw_bitmap_in_rect(ctx, s_tread_bmp, GRect(0, 112, 96, 56));
 }
 
 static void window_load(Window *window) {
   Layer *root = window_get_root_layer(window);
-
   s_canvas_layer = layer_create(GRect(0, 0, 144, 168));
   layer_set_update_proc(s_canvas_layer, canvas_update_proc);
   layer_add_child(root, s_canvas_layer);
-
   s_tread_bmp = gbitmap_create_with_resource(RESOURCE_ID_TREAD);
 }
 
 static void window_unload(Window *window) {
-  gbitmap_destroy(s_tread_bmp);
+  if (s_tread_bmp) gbitmap_destroy(s_tread_bmp);
   layer_destroy(s_canvas_layer);
 }
 
