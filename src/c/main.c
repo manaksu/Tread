@@ -11,7 +11,7 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
 
   // Tread: 96x56 at bottom-left corner, y=112
   graphics_context_set_compositing_mode(ctx, GCompOpSet);
-  graphics_draw_bitmap_in_rect(ctx, s_tread_bmp, GRect(0, 112, 96, 56));
+  graphics_draw_bitmap_in_rect(ctx, s_tread_bmp, GRect(0, 112, 144, 56));
 }
 
 static void window_load(Window *window) {
