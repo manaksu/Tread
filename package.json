@@ -1,12 +1,14 @@
 {
   "name": "treadwatch",
-  "version": "1.0",
+  "author": "Manaksu",
+  "version": "1.0.0",
   "keywords": ["pebble-app"],
+  "private": true,
+  "dependencies": {},
   "pebble": {
-    "projectType": "watchface",
+    "displayName": "Tread Watch",
     "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
     "sdkVersion": "3",
-    "author": "Manaksu",
     "targetPlatforms": ["basalt"],
     "watchapp": {
       "watchface": true
@@ -20,6 +22,6 @@
         }
       ]
     },
-    "appKeys": {}
+    "messageKeys": []
   }
 }
