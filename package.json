@@ -22,8 +22,8 @@
         },
         {
           "type": "font",
-          "name": "SPACE_GROTESK_BOLD_60",
-          "file": "fonts/SpaceGrotesk-Bold.ttf",
+          "name": "SPACE_GROTESK_MEDIUM_28",
+          "file": "fonts/SpaceGrotesk-Medium.ttf",
           "characterRegex": "[0-9]"
         }
       ]

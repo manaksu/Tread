@@ -31,10 +31,10 @@ static void window_load(Window *window) {
   layer_add_child(root, s_canvas_layer);
 
   s_tread_bmp = gbitmap_create_with_resource(RESOURCE_ID_TREAD);
-  s_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_SPACE_GROTESK_BOLD_60));
+  s_font = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_SPACE_GROTESK_MEDIUM_28));
 
   // HH — top left
-  s_hour_layer = text_layer_create(GRect(6, 4, 80, 65));
+  s_hour_layer = text_layer_create(GRect(6, 4, 80, 34));
   text_layer_set_background_color(s_hour_layer, GColorClear);
   text_layer_set_text_color(s_hour_layer, GColorBlack);
   text_layer_set_font(s_hour_layer, s_font);
@@ -42,7 +42,7 @@ static void window_load(Window *window) {
   layer_add_child(s_canvas_layer, text_layer_get_layer(s_hour_layer));
 
   // MM — below HH
-  s_min_layer = text_layer_create(GRect(6, 64, 80, 65));
+  s_min_layer = text_layer_create(GRect(6, 36, 80, 34));
   text_layer_set_background_color(s_min_layer, GColorClear);
   text_layer_set_text_color(s_min_layer, GColorBlack);
   text_layer_set_font(s_min_layer, s_font);
