@@ -1,8 +1,8 @@
 /*
  * TreadWatch — PebbleKit JS
- * AppMessage keys:
- *   0 = CLOCK_STYLE  : 0=Digital  1=Plate
- *   1 = BAT_STYLE    : 0=Default  1=Bike Wheel  2=Vanishing Road
+ * AppMessage keys (alphabetical = CloudPebble order):
+ *   0 = BAT_STYLE    : 0=Default  1=Bike Wheel  2=Vanishing Road
+ *   1 = CLOCK_STYLE  : 0=Digital  1=Plate
  */
 
 function loadCfg() {
@@ -19,7 +19,7 @@ function saveCfg(c) {
 
 function sendMsg(c) {
   Pebble.sendAppMessage(
-    { '0': c.clockStyle, '1': c.batStyle },
+    { '0': c.batStyle, '1': c.clockStyle },
     function() { console.log('TreadWatch: sent ok'); },
     function(e) { console.log('TreadWatch: failed', JSON.stringify(e)); }
   );
