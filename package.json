@@ -1,7 +1,7 @@
 {
   "name": "treadwatch",
   "author": "Manaksu",
-  "version": "1.0.8",
+  "version": "1.0.0",
   "keywords": [
     "pebble-app"
   ],
@@ -9,7 +9,7 @@
   "dependencies": {},
   "pebble": {
     "displayName": "Tread Watch",
-    "uuid": "6e1c9e6a-6768-411b-bb7f-bbc7c7e503a2",
+    "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
     "sdkVersion": "3",
     "enableMultiJS": true,
     "targetPlatforms": [
@@ -39,10 +39,21 @@
           "type": "bitmap",
           "name": "MAP_BG",
           "file": "images/map_bg.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "ROAD",
+          "file": "images/road.png"
+        },
+        {
+          "type": "bitmap",
+          "name": "ROAD_GHOST",
+          "file": "images/road_ghost.png"
         }
       ]
     },
     "messageKeys": [
+      "BAT_STYLE",
       "CLOCK_STYLE"
     ]
   }

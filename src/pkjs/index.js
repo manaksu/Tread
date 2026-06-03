@@ -1,22 +1,25 @@
 /*
  * TreadWatch — PebbleKit JS
- * AppMessage keys (alphabetical order for CloudPebble):
- *   0 = CLOCK_STYLE : 0=Digital  1=Plate
+ * AppMessage keys:
+ *   0 = CLOCK_STYLE  : 0=Digital  1=Plate
+ *   1 = BAT_STYLE    : 0=Default  1=Bike Wheel  2=Vanishing Road
  */
 
 function loadCfg() {
   return {
-    clockStyle: +(localStorage.getItem('tw_cs') || '0')
+    clockStyle: +(localStorage.getItem('tw_cs') || '0'),
+    batStyle:   +(localStorage.getItem('tw_bs') || '0')
   };
 }
 
 function saveCfg(c) {
   localStorage.setItem('tw_cs', c.clockStyle);
+  localStorage.setItem('tw_bs', c.batStyle);
 }
 
 function sendMsg(c) {
   Pebble.sendAppMessage(
-    { '0': c.clockStyle },
+    { '0': c.clockStyle, '1': c.batStyle },
     function() { console.log('TreadWatch: sent ok'); },
     function(e) { console.log('TreadWatch: failed', JSON.stringify(e)); }
   );
@@ -47,12 +50,15 @@ function buildConfig(c) {
     + '<h3>Clock style</h3>'
     + radio('clockStyle', ['Digital — HH / MM stacked', 'Plate — Dutch motorbike plate'], c.clockStyle)
 
+    + '<h3>Battery indicator</h3>'
+    + radio('batStyle', ['Default — standard Pebble battery', 'Bike Wheel — spoke fill', 'Vanishing Road — road fades'], c.batStyle)
+
     + '<button id="s">Save</button>'
     + '<script>'
     + 'function g(n){var e=document.querySelector("input[name="+n+"]:checked");return e?+e.value:0;}'
     + 'document.getElementById("s").onclick=function(){'
     +   'location.href="pebblejs://close#"+encodeURIComponent(JSON.stringify({'
-    +   'clockStyle:g("clockStyle")}));'
+    +   'clockStyle:g("clockStyle"),batStyle:g("batStyle")}));'
     + '};<\/script></body></html>';
 
   return 'data:text/html,' + encodeURIComponent(h);

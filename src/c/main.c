@@ -1,7 +1,8 @@
 #include <pebble.h>
 
-// Keys
-#define KEY_CLOCK_STYLE 0
+// Keys — alphabetical order matches CloudPebble
+#define KEY_BAT_STYLE   0
+#define KEY_CLOCK_STYLE 1
 
 // Plate geometry
 #define PLATE_X  4
@@ -112,6 +113,8 @@ static Window    *s_window;
 static Layer     *s_canvas_layer;
 static GBitmap   *s_tread_bmp;
 static GBitmap   *s_map_bmp;
+static GBitmap   *s_road_bmp;
+static GBitmap   *s_road_ghost_bmp;
 static TextLayer *s_time_layer;
 static TextLayer *s_hour_layer;
 static TextLayer *s_min_layer;
@@ -120,6 +123,7 @@ static TextLayer *s_nl_layer;
 static GFont      s_font_28;
 static GFont      s_font_20;
 static int        s_clock_style = 0;
+static int        s_bat_style   = 0;  // 0=default 1=wheel 2=road
 
 
 
@@ -173,11 +177,26 @@ static void update_layers(void) {
 // --- Canvas ---
 
 static void canvas_update_proc(Layer *layer, GContext *ctx) {
+  // Battery state needed for road and wheel
+  BatteryChargeState bat = battery_state_service_peek();
+
   // 1. Map background
   graphics_context_set_compositing_mode(ctx, GCompOpSet);
   graphics_draw_bitmap_in_rect(ctx, s_map_bmp, GRect(0, 0, 144, 168));
 
-  // 2. Tread
+  // 2. Road battery (style 2 only) — drawn under tread
+  if (s_bat_style == 2) {
+    #define ROAD_Y 68
+    #define ROAD_H 60
+    graphics_context_set_compositing_mode(ctx, GCompOpSet);
+    graphics_draw_bitmap_in_rect(ctx, s_road_ghost_bmp, GRect(0, ROAD_Y, 144, ROAD_H));
+    int road_w = (144 * bat.charge_percent) / 100;
+    if (road_w > 0) {
+      graphics_draw_bitmap_in_rect(ctx, s_road_bmp, GRect(0, ROAD_Y, road_w, ROAD_H));
+    }
+  }
+
+  // 3. Tread
   graphics_context_set_compositing_mode(ctx, GCompOpSet);
   graphics_draw_bitmap_in_rect(ctx, s_tread_bmp, GRect(0, 112, 144, 56));
 
@@ -199,9 +218,24 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
     draw_stud(ctx, 80, 37);
   }
 
-  // 4. Wheel battery indicator
-  BatteryChargeState bat = battery_state_service_peek();
-  draw_wheel(ctx, 119, 23, bat.charge_percent);
+  // 4. Battery indicator based on style
+  if (s_bat_style == 0) {
+    // Default: standard battery bar — small rect top-right
+    int bw = (40 * bat.charge_percent) / 100;
+    graphics_context_set_fill_color(ctx, GColorWhite);
+    graphics_fill_rect(ctx, GRect(98, 6, 42, 12), 2, GCornersAll);
+    graphics_context_set_fill_color(ctx, GColorBlack);
+    graphics_fill_rect(ctx, GRect(99, 7, bw, 10), 1, GCornersAll);
+    graphics_context_set_stroke_color(ctx, GColorBlack);
+    graphics_context_set_stroke_width(ctx, 1);
+    graphics_draw_round_rect(ctx, GRect(98, 6, 42, 12), 2);
+    // Battery tip
+    graphics_fill_rect(ctx, GRect(140, 9, 3, 6), 1, GCornersAll);
+  } else if (s_bat_style == 1) {
+    // Bike wheel
+    draw_wheel(ctx, 119, 23, bat.charge_percent);
+  }
+  // Style 2 (road) already drawn above
 }
 
 // --- Tick ---
@@ -228,9 +262,14 @@ static void inbox_received(DictionaryIterator *iter, void *ctx) {
   if (t) {
     s_clock_style = (int)t->value->int32;
     persist_write_int(KEY_CLOCK_STYLE, s_clock_style);
-    update_layers();
-    layer_mark_dirty(s_canvas_layer);
   }
+  t = dict_find(iter, KEY_BAT_STYLE);
+  if (t) {
+    s_bat_style = (int)t->value->int32;
+    persist_write_int(KEY_BAT_STYLE, s_bat_style);
+  }
+  update_layers();
+  layer_mark_dirty(s_canvas_layer);
 }
 
 // --- Window ---
@@ -242,8 +281,10 @@ static void window_load(Window *window) {
   layer_set_update_proc(s_canvas_layer, canvas_update_proc);
   layer_add_child(root, s_canvas_layer);
 
-  s_tread_bmp = gbitmap_create_with_resource(RESOURCE_ID_TREAD);
-  s_map_bmp   = gbitmap_create_with_resource(RESOURCE_ID_MAP_BG);
+  s_tread_bmp      = gbitmap_create_with_resource(RESOURCE_ID_TREAD);
+  s_map_bmp        = gbitmap_create_with_resource(RESOURCE_ID_MAP_BG);
+  s_road_bmp       = gbitmap_create_with_resource(RESOURCE_ID_ROAD);
+  s_road_ghost_bmp = gbitmap_create_with_resource(RESOURCE_ID_ROAD_GHOST);
   s_font_28 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_SPACE_GROTESK_MEDIUM_28));
   s_font_20 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_SPACE_GROTESK_MEDIUM_20));
 
@@ -294,6 +335,7 @@ static void window_load(Window *window) {
 
   // Restore + init
   s_clock_style = persist_read_int(KEY_CLOCK_STYLE);
+  s_bat_style   = persist_read_int(KEY_BAT_STYLE);
   update_layers();
   tick_timer_service_subscribe(MINUTE_UNIT, handle_tick);
   time_t now = time(NULL);
@@ -308,6 +350,8 @@ static void window_unload(Window *window) {
   fonts_unload_custom_font(s_font_20);
   gbitmap_destroy(s_tread_bmp);
   gbitmap_destroy(s_map_bmp);
+  gbitmap_destroy(s_road_bmp);
+  gbitmap_destroy(s_road_ghost_bmp);
   text_layer_destroy(s_hour_layer);
   text_layer_destroy(s_min_layer);
   text_layer_destroy(s_time_layer);
