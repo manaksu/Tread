@@ -173,14 +173,17 @@ static void update_layers(void) {
 // --- Canvas ---
 
 static void canvas_update_proc(Layer *layer, GContext *ctx) {
-  // Map background — drawn first, everything on top
+  // 1. Map background
   graphics_context_set_compositing_mode(ctx, GCompOpSet);
   graphics_draw_bitmap_in_rect(ctx, s_map_bmp, GRect(0, 0, 144, 168));
 
+  // 2. Tread
+  graphics_context_set_compositing_mode(ctx, GCompOpSet);
+  graphics_draw_bitmap_in_rect(ctx, s_tread_bmp, GRect(0, 112, 144, 56));
+
+  // 3. Plate (primitives on top)
   if (s_clock_style == 1) {
-    // Yellow plate
     fill_rrect(ctx, GRect(PLATE_X, PLATE_Y, PLATE_W, PLATE_H), PLATE_R, GColorChromeYellow);
-    // Blue top-left corner
     graphics_context_set_fill_color(ctx, GColorCobaltBlue);
     graphics_fill_circle(ctx, GPoint(PLATE_X + PLATE_R, PLATE_Y + PLATE_R), PLATE_R);
     graphics_fill_rect(ctx, GRect(PLATE_X, PLATE_Y + PLATE_R, BLUE_W, BLUE_H - PLATE_R), 0, GCornerNone);
@@ -196,13 +199,9 @@ static void canvas_update_proc(Layer *layer, GContext *ctx) {
     draw_stud(ctx, 80, 37);
   }
 
-  // Wheel battery indicator — top-right, center at (124, 38)
+  // 4. Wheel battery indicator
   BatteryChargeState bat = battery_state_service_peek();
   draw_wheel(ctx, 119, 23, bat.charge_percent);
-
-  // Tread
-  graphics_context_set_compositing_mode(ctx, GCompOpSet);
-  graphics_draw_bitmap_in_rect(ctx, s_tread_bmp, GRect(0, 112, 144, 56));
 }
 
 // --- Tick ---
