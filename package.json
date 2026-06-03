@@ -1,7 +1,7 @@
 {
   "name": "treadwatch",
   "author": "Manaksu",
-  "version": "1.0.0",
+  "version": "1.0.9",
   "keywords": [
     "pebble-app"
   ],
@@ -9,7 +9,7 @@
   "dependencies": {},
   "pebble": {
     "displayName": "Tread Watch",
-    "uuid": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "uuid": "6e1c9e6a-6768-411b-bb7f-bbc7c7e503a2",
     "sdkVersion": "3",
     "enableMultiJS": true,
     "targetPlatforms": [
